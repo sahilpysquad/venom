@@ -1,11 +1,17 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
-    email = models.EmailField(verbose_name=_('Email Address'), blank=True, null=True)
-    phone = models.CharField(verbose_name=_('Phone'), max_length=15, null=True)
+    PHONE_NUMBER_REGEX = RegexValidator(
+        regex=r'^\+?1?\d{9,15}$',
+        message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+    )
+
+    email = models.EmailField(verbose_name=_('Email Address'), unique=True, null=False)
+    phone = models.CharField(verbose_name=_('Phone'), max_length=17, unique=True, validators=[PHONE_NUMBER_REGEX], null=False)
     email_token = models.CharField(verbose_name=_('Email Token'), max_length=30, null=True,)
     phone_otp = models.IntegerField(verbose_name=_('Phone OTP'), null=True)
     is_email_verified = models.BooleanField(verbose_name=_('Is Email Verified'), default=False)

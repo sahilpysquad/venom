@@ -1,7 +1,7 @@
 from django import forms
 
 from account_user.models import User
-from utils.helper_methods import send_mail
+from utils.helper_methods import send_mail, generate_token
 
 
 class UserForm(forms.ModelForm):
@@ -22,21 +22,21 @@ class UserForm(forms.ModelForm):
         password = data.get('password')
         password2 = data.get('password2')
         if not password == password2:
-            self.add_error(password, 'Password and Confirm Password does not match..!')
+            self.add_error('password', 'Password and Confirm Password does not match..!')
         return data
 
     def save(self, commit=True):
         user = super(UserForm, self).save(commit=commit)
         user.set_password(user.password)
         user.is_active = False
-        user.save()
-        context = {'token': 'abcdefghijklmnopqrstuvwxyz'}
         if user.email:
-            print(user.email)
+            token = generate_token()
+            user.email_token = token
             send_mail.apply_async(kwargs={
                 'subject': 'VERIFY YOUR EMAIL',
                 'to': (user.email,),
                 'html_template': 'email/email_verification_mail.html',
-                'context': context
+                'context': {'url': f'http://localhost:8000/vc/account/verify/confirm/?token={token}'}
             })
+        user.save()
         return user

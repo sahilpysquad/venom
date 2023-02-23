@@ -1,9 +1,14 @@
-from celery import shared_task
+import secrets
+
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from venom.celery_task import app
+
+
+def generate_token():
+    return str(secrets.token_hex(10))
 
 
 def send_otp_to_phone_number(phone_number):

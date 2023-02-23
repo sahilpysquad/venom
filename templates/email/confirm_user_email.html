@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if messages %}
+{% for msg in messages %}
+<p>{{ msg }}</p>
+{% endfor %}
+{% endif %}
+{% if user.is_email_verified %}
+<span>Your email is already verified.</span>
+{% else %}
+<span>Your email is verified.</span>
+{% endif %}
+{% endblock %}
