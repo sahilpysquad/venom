@@ -38,7 +38,8 @@ INSTALLED_APPS = [
 
     'django_extensions',
 
-    'account_user'
+    'account_user',
+    'vc'
 ]
 
 MIDDLEWARE = [
@@ -133,6 +134,7 @@ AUTH_USER_MODEL = 'account_user.User'
 
 SHELL_PLUS_PRE_IMPORTS = (
     ('account_user', '*'),
+    ('vc', '*'),
 )
 
 CELERY_BROKER_URL = "redis://localhost:6379"
@@ -149,4 +151,6 @@ AUTHENTICATION_BACKENDS = (
     'account_user.backends.CustomBackend',
 )
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Organized VCs</h3>
+<table>
+  <tr>
+    <th>No.</th>
+    <th>Name</th>
+    <th>VC ID</th>
+    <th>Amount</th>
+  </tr>
+    {% for organizer_vcs_obj in organizer_vcs_objs %}
+  <tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ organizer_vcs_obj.name }}</td>
+    <td>{{ organizer_vcs_obj.vc_id }}</td>
+    <td>{{ organizer_vcs_obj.total_amount }}</td>
+  </tr>
+    {% endfor %}
+</table><br><br>
+
+<h3>Participated VCs</h3>
+<table>
+  <tr>
+    <th>No.</th>
+    <th>Name</th>
+    <th>VC ID</th>
+    <th>Amount</th>
+  </tr>
+    {% for participant_vcs_obj in participant_vcs_objs %}
+  <tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ participant_vcs_obj.name }}</td>
+    <td>{{ participant_vcs_obj.vc_id }}</td>
+    <td>{{ participant_vcs_obj.total_amount }}</td>
+  </tr>
+    {% endfor %}
+</table><br><br>
+{% endblock%}

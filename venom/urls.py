@@ -20,6 +20,7 @@ from account_user.views import HomePage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('vc/account/', include('account_user.urls')),
+    path('account/', include('account_user.urls')),
+    path('vc/', include('vc.urls')),
     path('', HomePage.as_view(), name='home')
 ]
