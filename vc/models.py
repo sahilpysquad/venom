@@ -19,7 +19,7 @@ class VC(models.Model):
         verbose_name='Participants', to=User, related_name='vc_participant_users', blank=True
     )
     emi_type = models.CharField(verbose_name='EMI Type', max_length=12, choices=EMI_TYPE, default='M')
-    total_amount = models.PositiveBigIntegerField(verbose_name='Total Amount')
+    emi_amount = models.PositiveBigIntegerField(verbose_name='EMI Amount', default=1000)
     is_active = models.BooleanField(verbose_name='Active', default=True)
     created_at = models.DateTimeField(verbose_name='Created On', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Updated On', auto_now=True)
@@ -35,12 +35,13 @@ class VC(models.Model):
         return f'<VC: {self.vc_id}>'
 
     def save(self, *args, **kwargs):
-        self.vc_id = datetime.datetime.now().strftime('V%Y%m%d%H%M%SC')
+        if not self.vc_id:
+            self.vc_id = datetime.datetime.now().strftime('V%Y%m%d%H%M%SC')
         return super(VC, self).save(*args, **kwargs)
 
     @property
-    def emi_amount(self):
-        return self.total_amount / self.participant.count()
+    def total_amount(self):
+        return self.participant.count * self.emi_amount
 
 
 class AmountPaidByUser(models.Model):

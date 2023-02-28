@@ -13,7 +13,7 @@
     <td>{{ forloop.counter }}</td>
     <td>{{ organizer_vcs_obj.name }}</td>
     <td>{{ organizer_vcs_obj.vc_id }}</td>
-    <td>{{ organizer_vcs_obj.total_amount }}</td>
+    <td>{{ organizer_vcs_obj.emi_amount }}</td>
   </tr>
     {% endfor %}
 </table><br><br>
@@ -31,7 +31,7 @@
     <td>{{ forloop.counter }}</td>
     <td>{{ participant_vcs_obj.name }}</td>
     <td>{{ participant_vcs_obj.vc_id }}</td>
-    <td>{{ participant_vcs_obj.total_amount }}</td>
+    <td>{{ participant_vcs_obj.emi_amount }}</td>
   </tr>
     {% endfor %}
 </table><br><br>
