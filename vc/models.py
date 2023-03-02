@@ -1,6 +1,8 @@
 import datetime
 
 from django.db import models
+from django.db.models import Value
+from django.db.models.functions import Concat
 
 from account_user.models import User
 
@@ -39,9 +41,42 @@ class VC(models.Model):
             self.vc_id = datetime.datetime.now().strftime('V%Y%m%d%H%M%SC')
         return super(VC, self).save(*args, **kwargs)
 
+    def get_basic_details(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'vc_id': self.vc_id,
+            'emi_type': self.emi_type,
+            'emi_type_verbose': self.emi_type_verbose,
+            'emi_amount': self.emi_amount,
+            'total_amount': self.total_amount,
+            'organizers_full_names': ', '.join(self.organizers_full_names_list),
+            'participants_full_names': ', '.join(self.participants_full_names_list),
+            'is_active': self.is_active,
+            'created_on': self.created_at.strftime('%b %d, %Y %H:%M')
+        }
+
     @property
     def total_amount(self):
-        return self.participant.count * self.emi_amount
+        return self.participant.count() * self.emi_amount
+
+    @property
+    def organizers_full_names_list(self):
+        full_names_list = list(self.organizer.annotate(fullname=Concat(
+            'first_name', Value(' '), 'last_name'
+        )).values_list('fullname', flat=True))
+        return full_names_list
+
+    @property
+    def participants_full_names_list(self):
+        full_names_list = list(self.participant.annotate(fullname=Concat(
+            'first_name', Value(' '), 'last_name'
+        )).values_list('fullname', flat=True))
+        return full_names_list
+
+    @property
+    def emi_type_verbose(self):
+        return dict(self.EMI_TYPE).get(self.emi_type)
 
 
 class AmountPaidByUser(models.Model):

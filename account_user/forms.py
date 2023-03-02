@@ -5,8 +5,8 @@ from utils.helper_methods import send_mail, generate_token
 
 
 class UserForm(forms.ModelForm):
-    password2 = forms.CharField(label='Password2', widget=forms.PasswordInput, max_length=150, required=True)
-    password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput, max_length=150, required=True)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput, max_length=150, required=True)
+    password = forms.CharField(label='Password', widget=forms.PasswordInput, max_length=150, required=True)
 
     class Meta:
         model = User

@@ -7,6 +7,7 @@
     <th>Name</th>
     <th>VC ID</th>
     <th>Amount</th>
+    <th>Action</th>
   </tr>
     {% for organizer_vcs_obj in organizer_vcs_objs %}
   <tr>
@@ -14,6 +15,9 @@
     <td>{{ organizer_vcs_obj.name }}</td>
     <td>{{ organizer_vcs_obj.vc_id }}</td>
     <td>{{ organizer_vcs_obj.emi_amount }}</td>
+    <td>
+      <a href="{% url 'vc_detail' organizer_vcs_obj.vc_id %}">Details</a>
+    </td>
   </tr>
     {% endfor %}
 </table><br><br>

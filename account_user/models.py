@@ -14,7 +14,7 @@ class User(AbstractUser):
     phone = models.CharField(
         verbose_name=_('Phone'), max_length=17, unique=True, validators=[PHONE_NUMBER_REGEX], null=False
     )
-    email_token = models.CharField(verbose_name=_('Email Token'), max_length=30, null=True,)
+    email_token = models.CharField(verbose_name=_('Email Token'), max_length=30, null=True, )
     phone_otp = models.IntegerField(verbose_name=_('Phone OTP'), null=True)
     is_email_verified = models.BooleanField(verbose_name=_('Is Email Verified'), default=False)
     is_phone_verified = models.BooleanField(verbose_name=_('Is Phone Verified'), default=False)
@@ -25,6 +25,10 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    @property
+    def full_name(self):
+        return self.get_full_name()
 
 
 class UserDetails(models.Model):
