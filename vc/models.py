@@ -8,6 +8,13 @@ from account_user.models import User
 
 
 class VC(models.Model):
+    STATUS = (
+        ('CR', 'Created'),
+        ('OG', 'On-Going'),
+        ('CP', 'Completed'),
+        ('TM', 'Terminated')
+    )
+
     EMI_TYPE = (
         ('W', 'Week'),
         ('M', 'Month'),
@@ -16,13 +23,17 @@ class VC(models.Model):
 
     name = models.CharField(verbose_name='Name', max_length=250, default='')
     vc_id = models.CharField(verbose_name='VC Id', max_length=20, editable=False, unique=True)
+    created_by = models.ForeignKey(
+        verbose_name='Created By', to=User, related_name='vcs', on_delete=models.DO_NOTHING, null=True
+    )
     organizer = models.ManyToManyField(verbose_name='Organizers', to=User, related_name='vc_organizer_users')
     participant = models.ManyToManyField(
         verbose_name='Participants', to=User, related_name='vc_participant_users', blank=True
     )
     emi_type = models.CharField(verbose_name='EMI Type', max_length=12, choices=EMI_TYPE, default='M')
     emi_amount = models.PositiveBigIntegerField(verbose_name='EMI Amount', default=1000)
-    is_active = models.BooleanField(verbose_name='Active', default=True)
+    status = models.CharField(verbose_name='Status', max_length=2, choices=STATUS, default='CR')
+    interest = models.PositiveSmallIntegerField(verbose_name='Interest', default=0)
     created_at = models.DateTimeField(verbose_name='Created On', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Updated On', auto_now=True)
 
@@ -46,13 +57,15 @@ class VC(models.Model):
             'id': self.id,
             'name': self.name,
             'vc_id': self.vc_id,
+            'created_by': self.created_by.get_basic_details(),
             'emi_type': self.emi_type,
             'emi_type_verbose': self.emi_type_verbose,
             'emi_amount': self.emi_amount,
             'total_amount': self.total_amount,
             'organizers_full_names': ', '.join(self.organizers_full_names_list),
             'participants_full_names': ', '.join(self.participants_full_names_list),
-            'is_active': self.is_active,
+            'status': self.status_verbose,
+            'interest': self.interest,
             'created_on': self.created_at.strftime('%b %d, %Y %H:%M')
         }
 
@@ -77,6 +90,10 @@ class VC(models.Model):
     @property
     def emi_type_verbose(self):
         return dict(self.EMI_TYPE).get(self.emi_type)
+
+    @property
+    def status_verbose(self):
+        return dict(self.STATUS).get(self.status)
 
 
 class AmountPaidByUser(models.Model):

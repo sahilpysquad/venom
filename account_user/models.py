@@ -26,6 +26,16 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+    def get_basic_details(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'full_name': self.full_name,
+            'email': self.email,
+            'phone': self.phone,
+            'is_active': self.is_active
+        }
+
     @property
     def full_name(self):
         return self.get_full_name()

@@ -139,6 +139,7 @@ SHELL_PLUS_PRE_IMPORTS = (
 
 CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_RESULT_BACKEND = "redis://localhost:6379"
+# python -m celery -A venom worker --pool=solo -l INFO (start celery server)
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

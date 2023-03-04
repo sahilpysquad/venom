@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
 
+from account_user.models import User
 from vc.forms import VCModelForm
 from vc.models import VC
 
@@ -11,7 +12,7 @@ class VCListView(LoginRequiredMixin, ListView):
     context_object_name = 'organizer_vcs_objs'
 
     def get_queryset(self):
-        return self.model.objects.filter(organizer=self.request.user.id)
+        return self.model.objects.filter(created_by=self.request.user.id)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(VCListView, self).get_context_data(object_list=None, **kwargs)
@@ -24,6 +25,17 @@ class VCCreateView(LoginRequiredMixin, CreateView):
     model = VC
     form_class = VCModelForm
     success_url = '/vc/all-vcs/'
+    user_queryset = User.objects.filter(is_active=True)
+
+    def get_form(self, form_class=form_class):
+        form = super(VCCreateView, self).get_form(form_class)
+        form.fields["organizer"].queryset = self.user_queryset.exclude(id=self.request.user.id)
+        form.fields['participant'].queryset = self.user_queryset
+        return form
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super(VCCreateView, self).form_valid(form)
 
 
 class VCDetailView(LoginRequiredMixin, DetailView):
@@ -36,3 +48,14 @@ class VCDetailView(LoginRequiredMixin, DetailView):
 
 class VCUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'vc/vc_update.html'
+    model = VC
+    slug_url_kwarg = 'vc_id'
+    slug_field = 'vc_id'
+    fields = ('name', 'organizer', 'emi_type', 'emi_amount', 'participant', 'interest')
+    user_queryset = User.objects.filter(is_active=True)
+
+    def get_form(self, form_class=None):
+        form = super(VCUpdateView, self).get_form(form_class)
+        form.fields["organizer"].queryset = self.user_queryset.exclude(id=self.request.user.id)
+        form.fields['participant'].queryset = self.user_queryset
+        return form
