@@ -12,6 +12,13 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv, dotenv_values
+
+if not load_dotenv():
+    raise EnvironmentError("Please add .env file in project directory(get reference from .env-EXAMPLE)")
+
+ENV_VARIABLES = dict(dotenv_values())
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -72,20 +79,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'venom.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'vc',
-        'USER': 'postgres',  # Not used with sqlite3.
-        'PASSWORD': 'Root@123',  # Not used with sqlite3.
-        'HOST': 'localhost',
-        'PORT': '5432',
-    },
-}
-
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -137,17 +130,6 @@ SHELL_PLUS_PRE_IMPORTS = (
     ('vc', '*'),
 )
 
-CELERY_BROKER_URL = "redis://localhost:6379"
-CELERY_RESULT_BACKEND = "redis://localhost:6379"
-# python -m celery -A venom worker --pool=solo -l INFO (start celery server)
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = "cacms.alert@gmail.com"
-EMAIL_HOST_PASSWORD = "luyakfunqplljtjh"
-
 AUTHENTICATION_BACKENDS = (
     'account_user.backends.CustomBackend',
 )
@@ -155,3 +137,19 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
+
+
+VENOM_ENV = ENV_VARIABLES.get('VENOM_ENV')
+if not VENOM_ENV:
+    raise EnvironmentError("Please set envirnment variable VENOM_ENV with dev/stage/prod")
+elif VENOM_ENV not in ['dev', 'stag', 'prod']:
+    raise EnvironmentError("Please provide valid envirnment code [dev, stage, prod]")
+
+print(" "*50 + "\n" + "*"*50 + "\n" + "Using VENOM_ENV: " + (str(VENOM_ENV)) + "\n" + "*"*50 + "\n" + " "*50)
+
+if VENOM_ENV.lower() == "dev":
+    from .dev import *
+elif VENOM_ENV.lower() == "stage":
+    from .stage import *
+elif VENOM_ENV.lower() == "prod":
+    from .prod import *

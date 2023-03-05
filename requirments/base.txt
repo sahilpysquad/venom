@@ -1,0 +1,5 @@
+celery==5.2.7
+Django==4.0.1
+Pillow==9.4.0
+redis==4.4.2
+python-dotenv==1.0.0
