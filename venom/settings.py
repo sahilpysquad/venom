@@ -45,6 +45,8 @@ INSTALLED_APPS = [
 
     'django_extensions',
 
+    'rest_framework',
+
     'account_user',
     'vc'
 ]
@@ -141,7 +143,7 @@ LOGOUT_REDIRECT_URL = 'login'
 
 VENOM_ENV = ENV_VARIABLES.get('VENOM_ENV')
 if not VENOM_ENV:
-    raise EnvironmentError("Please set envirnment variable VENOM_ENV with dev/stage/prod")
+    raise EnvironmentError("Please set envirnment variable VENOM_ENV in .env file")
 elif VENOM_ENV not in ['dev', 'stag', 'prod']:
     raise EnvironmentError("Please provide valid envirnment code [dev, stage, prod]")
 

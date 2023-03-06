@@ -64,7 +64,8 @@ class VC(models.Model):
             'total_amount': self.total_amount,
             'organizers_full_names': ', '.join(self.organizers_full_names_list),
             'participants_full_names': ', '.join(self.participants_full_names_list),
-            'status': self.status_verbose,
+            'status': self.status,
+            'status_verbose': self.status_verbose,
             'interest': self.interest,
             'created_on': self.created_at.strftime('%b %d, %Y %H:%M')
         }

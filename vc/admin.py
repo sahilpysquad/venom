@@ -15,4 +15,4 @@ class AmountPaidByUserModelAdmin(admin.ModelAdmin):
 
 @admin.register(VC)
 class VCModelAdmin(admin.ModelAdmin):
-    list_display = ('vc_id', 'emi_type', 'emi_amount', 'status', 'interest')
+    list_display = ('vc_id', 'emi_type', 'emi_amount', 'status', 'interest', 'created_by')
