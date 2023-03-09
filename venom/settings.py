@@ -10,12 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv, dotenv_values
 
 if not load_dotenv():
-    raise EnvironmentError("Please add .env file in project directory(get reference from .env-EXAMPLE)")
+    raise EnvironmentError('Please add .env file in project directory(get reference from .env-EXAMPLE)')
 
 ENV_VARIABLES = dict(dotenv_values())
 
@@ -115,7 +116,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static")
+    os.path.join(BASE_DIR, 'static')
 ]
 
 # Default primary key field type
@@ -136,22 +137,35 @@ AUTHENTICATION_BACKENDS = (
     'account_user.backends.CustomBackend',
 )
 
+APPEND_SLASH = False
+
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
 
 VENOM_ENV = ENV_VARIABLES.get('VENOM_ENV')
 if not VENOM_ENV:
-    raise EnvironmentError("Please set envirnment variable VENOM_ENV in .env file")
+    raise EnvironmentError('Please set envirnment variable VENOM_ENV in .env file')
 elif VENOM_ENV not in ['dev', 'stag', 'prod']:
-    raise EnvironmentError("Please provide valid envirnment code [dev, stage, prod]")
+    raise EnvironmentError('Please provide valid envirnment code [dev, stage, prod]')
 
-print(" "*50 + "\n" + "*"*50 + "\n" + "Using VENOM_ENV: " + (str(VENOM_ENV)) + "\n" + "*"*50 + "\n" + " "*50)
+print(' '*50 + '\n' + '*'*50 + '\n' + 'Using VENOM_ENV: ' + (str(VENOM_ENV)) + '\n' + '*'*50 + '\n' + ' '*50)
 
-if VENOM_ENV.lower() == "dev":
+if VENOM_ENV.lower() == 'dev':
     from .dev import *
-elif VENOM_ENV.lower() == "stage":
+elif VENOM_ENV.lower() == 'stage':
     from .stage import *
-elif VENOM_ENV.lower() == "prod":
+elif VENOM_ENV.lower() == 'prod':
     from .prod import *

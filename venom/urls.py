@@ -16,12 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from account_user.apis.api import LoginAPIView
 from account_user.views import HomePage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # HTML
     path('account/', include('account_user.urls')),
-    path('account/', include('account_user.apis.api_urls')),
     path('vc/', include('vc.urls')),
-    path('', HomePage.as_view(), name='home')
+    path('', HomePage.as_view(), name='home'),
+
+    # APIs
+    path('api/account/', include('account_user.apis.api_urls')),
 ]

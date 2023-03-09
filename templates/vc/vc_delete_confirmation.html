@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>VC Details</h3>
+<form method="post">
+    {% csrf_token %}
+    <h4>Are you sure you want to delete?</h4>
+    <h5>VC ID is:- {{object.vc_id}}</h5>
+    <input type="submit" value="Confirm Delete">
+</form>
+{% endblock%}

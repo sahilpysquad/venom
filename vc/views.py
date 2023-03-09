@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, ListView, UpdateView, DetailView
+from django.http import HttpResponseRedirect
+from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView
 
 from account_user.models import User
 from vc.forms import VCModelForm
@@ -12,7 +13,7 @@ class VCListView(LoginRequiredMixin, ListView):
     context_object_name = 'organizer_vcs_objs'
 
     def get_queryset(self):
-        return self.model.objects.filter(created_by=self.request.user.id)
+        return self.model.objects.filter(created_by=self.request.user.id).exclude(status='TM')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(VCListView, self).get_context_data(object_list=None, **kwargs)
@@ -29,7 +30,7 @@ class VCCreateView(LoginRequiredMixin, CreateView):
 
     def get_form(self, form_class=form_class):
         form = super(VCCreateView, self).get_form(form_class)
-        form.fields["organizer"].queryset = self.user_queryset.exclude(id=self.request.user.id)
+        form.fields['organizer'].queryset = self.user_queryset.exclude(id=self.request.user.id)
         form.fields['participant'].queryset = self.user_queryset
         return form
 
@@ -52,10 +53,27 @@ class VCUpdateView(LoginRequiredMixin, UpdateView):
     slug_url_kwarg = 'vc_id'
     slug_field = 'vc_id'
     fields = ('name', 'organizer', 'emi_type', 'emi_amount', 'participant', 'interest')
+    success_url = '/vc/all-vcs/'
     user_queryset = User.objects.filter(is_active=True)
 
     def get_form(self, form_class=None):
         form = super(VCUpdateView, self).get_form(form_class)
-        form.fields["organizer"].queryset = self.user_queryset.exclude(id=self.request.user.id)
+        form.fields['organizer'].queryset = self.user_queryset.exclude(id=self.request.user.id)
         form.fields['participant'].queryset = self.user_queryset
         return form
+
+
+class VCDeleteView(LoginRequiredMixin, DeleteView):
+    template_name = 'vc/vc_delete_confirmation.html'
+    model = VC
+    slug_url_kwarg = 'vc_id'
+    slug_field = 'vc_id'
+    success_url = '/vc/all-vcs/'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        import pdb; pdb.set_trace()
+        self.object.status = 'TM'
+        self.object.save()
+        return HttpResponseRedirect(success_url)

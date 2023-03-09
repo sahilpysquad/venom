@@ -12,4 +12,4 @@ DATABASES = {
 }
 
 ALLOWED_HOSTS = []
-STATIC_URL = "/assets/"
+STATIC_URL = '/assets/'

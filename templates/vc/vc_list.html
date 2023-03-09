@@ -21,7 +21,10 @@
     <td>{{ organizer_vcs_obj.status_verbose }}</td>
     <td>
       <a href="{% url 'vc_detail' organizer_vcs_obj.vc_id %}">Details</a>
-      <a href="{% url 'vc_update' organizer_vcs_obj.vc_id %}">Update</a>
+      {% if organizer_vcs_obj.status == 'CR' %}
+      <a href="{% url 'vc_update' organizer_vcs_obj.vc_id %}">Edit</a>
+      <a href="{% url 'vc_delete' organizer_vcs_obj.vc_id %}">Delete</a>
+      {% endif %}
     </td>
   </tr>
     {% endfor %}
