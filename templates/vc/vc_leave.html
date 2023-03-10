@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container">
-    <h3>Delete VC</h3>
+    <h3>Leave VC</h3>
     <form method="post">
         {% csrf_token %}
-        <h4>Are you sure you want to delete?</h4>
+        <h4>Are you sure you want to leave the VC?</h4>
         <h5>VC ID is:- {{object.vc_id}}</h5>
-        <input type="submit" value="Confirm Delete" class="btn btn-primary">
+        <input type="submit" value="Confirm Leave" class="btn btn-primary">
     </form>
 </div>
 {% endblock%}

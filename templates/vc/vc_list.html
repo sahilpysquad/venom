@@ -1,54 +1,125 @@
 {% extends 'base.html' %}
+{% block title%}VC List{% endblock %}
 {% block content %}
-<h3>Organized VCs</h3>
-<table>
-  <tr>
-    <th>No.</th>
-    <th>Name</th>
-    <th>VC ID</th>
-    <th>Amount</th>
-    <th>Interest %</th>
-    <th>Status</th>
-    <th>Action</th>
-  </tr>
-    {% for organizer_vcs_obj in organizer_vcs_objs %}
-  <tr>
-    <td>{{ forloop.counter }}</td>
-    <td>{{ organizer_vcs_obj.name }}</td>
-    <td>{{ organizer_vcs_obj.vc_id }}</td>
-    <td>{{ organizer_vcs_obj.emi_amount }}</td>
-    <td>{{ organizer_vcs_obj.interest }} %</td>
-    <td>{{ organizer_vcs_obj.status_verbose }}</td>
-    <td>
-      <a href="{% url 'vc_detail' organizer_vcs_obj.vc_id %}">Details</a>
-      {% if organizer_vcs_obj.status == 'CR' %}
-      <a href="{% url 'vc_update' organizer_vcs_obj.vc_id %}">Edit</a>
-      <a href="{% url 'vc_delete' organizer_vcs_obj.vc_id %}">Delete</a>
-      {% endif %}
-    </td>
-  </tr>
-    {% endfor %}
-</table><br><br>
+<br>
+<h3 class="text-center">Created VCs</h3>
+<div class="container">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">No.</th>
+        <th scope="col">Name</th>
+        <th scope="col">VC ID</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Interest %</th>
+        <th scope="col">Status</th>
+        <th scope="col">Action</th>
+      </tr>
+    <tbody>
+      {% for created_vc in created_vcs %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ created_vc.name }}</td>
+        <td>{{ created_vc.vc_id }}</td>
+        <td>{{ created_vc.emi_amount }}</td>
+        <td>{{ created_vc.interest }} %</td>
+        <td>{{ created_vc.status_verbose }}</td>
+        <td>
+          <a href="{% url 'vc_detail' created_vc.vc_id %}">
+            <button type="button" class="btn btn-success">Details</button>
+          </a>
+          {% if created_vc.status == 'CR' %}
+          <a href="{% url 'vc_update' created_vc.vc_id %}">
+            <button type="button" class="btn btn-primary">Edit</button>
+          </a>
+          <a href="{% url 'vc_delete' created_vc.vc_id %}">
+            <button type="button" class="btn btn-danger">Delete</button>
+          </a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div><br><br>
 
-<h3>Participated VCs</h3>
-<table>
-  <tr>
-    <th>No.</th>
-    <th>Name</th>
-    <th>VC ID</th>
-    <th>Amount</th>
-    <th>Interest %</th>
-    <th>Status</th>
-  </tr>
-    {% for participant_vcs_obj in participant_vcs_objs %}
-  <tr>
-    <td>{{ forloop.counter }}</td>
-    <td>{{ participant_vcs_obj.name }}</td>
-    <td>{{ participant_vcs_obj.vc_id }}</td>
-    <td>{{ participant_vcs_obj.emi_amount }}</td>
-    <td>{{ participant_vcs_obj.interest }}</td>
-    <td>{{ participant_vcs_obj.status_verbose }}</td>
-  </tr>
-    {% endfor %}
-</table><br><br>
+<h3 class="text-center">Organized VCs</h3>
+<div class="container">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">No.</th>
+        <th scope="col">Name</th>
+        <th scope="col">VC ID</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Interest %</th>
+        <th scope="col">Status</th>
+        <th scope="col">Action</th>
+      </tr>
+    <tbody>
+      {% for organizer_vcs_obj in organizer_vcs_objs %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ organizer_vcs_obj.name }}</td>
+        <td>{{ organizer_vcs_obj.vc_id }}</td>
+        <td>{{ organizer_vcs_obj.emi_amount }}</td>
+        <td>{{ organizer_vcs_obj.interest }} %</td>
+        <td>{{ organizer_vcs_obj.status_verbose }}</td>
+        <td>
+          <a href="{% url 'vc_detail' organizer_vcs_obj.vc_id %}">
+            <button type="button" class="btn btn-success">Details</button>
+          </a>
+          {% if organizer_vcs_obj.status == 'CR' %}
+          <form method="POST" action="{% url 'vc_leave' organizer_vcs_obj.vc_id %}">
+            {% csrf_token %}
+            <input name="organized_btn" type="submit" value="Leave VC" class="btn btn-danger"
+              onclick="return confirm('Are you sure you want to leave VC?');">
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div><br><br>
+
+<h3 class="text-center">Participated VCs</h3>
+<div class="container">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">No.</th>
+        <th scope="col">Name</th>
+        <th scope="col">VC ID</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Interest %</th>
+        <th scope="col">Status</th>
+        <th scope="col">Action</th>
+      </tr>
+    <tbody>
+      {% for participant_vcs_obj in participant_vcs_objs %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ participant_vcs_obj.name }}</td>
+        <td>{{ participant_vcs_obj.vc_id }}</td>
+        <td>{{ participant_vcs_obj.emi_amount }}</td>
+        <td>{{ participant_vcs_obj.interest }}</td>
+        <td>{{ participant_vcs_obj.status_verbose }}</td>
+        <td>
+          <a href="{% url 'vc_detail' participant_vcs_obj.vc_id %}">
+            <button type="button" class="btn btn-success">Details</button>
+          </a>
+          {% if participant_vcs_obj.status == 'CR' %}
+          <form method="POST" action="{% url 'vc_leave' participant_vcs_obj.vc_id %}">
+            {% csrf_token %}
+            <input name="participated_btn" type="submit" value="Leave VC" class="btn btn-danger"
+              onclick="return confirm('Are you sure you want to leave VC?');">
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock%}

@@ -13,11 +13,14 @@ class VCListView(LoginRequiredMixin, ListView):
     context_object_name = 'organizer_vcs_objs'
 
     def get_queryset(self):
-        return self.model.objects.filter(created_by=self.request.user.id).exclude(status='TM')
+        return self.model.objects.filter(organizer=self.request.user.id).exclude(status='TM')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(VCListView, self).get_context_data(object_list=None, **kwargs)
-        context['participant_vcs_objs'] = self.model.objects.filter(participant=self.request.user.id)
+        context['participant_vcs_objs'] = self.model.objects.filter(
+            participant=self.request.user.id
+        ).exclude(status='TM')
+        context['created_vcs'] = self.model.objects.filter(created_by=self.request.user.id).exclude(status='TM')
         return context
 
 
@@ -70,10 +73,22 @@ class VCDeleteView(LoginRequiredMixin, DeleteView):
     slug_field = 'vc_id'
     success_url = '/vc/all-vcs/'
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        success_url = self.get_success_url()
-        import pdb; pdb.set_trace()
+    def form_valid(self, form):
         self.object.status = 'TM'
         self.object.save()
-        return HttpResponseRedirect(success_url)
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class LeaveVCView(LoginRequiredMixin, DeleteView):
+    template_name = 'vc/vc_leave.html'
+    model = VC
+    slug_url_kwarg = 'vc_id'
+    slug_field = 'vc_id'
+    success_url = '/vc/all-vcs/'
+
+    def form_valid(self, form):
+        if 'participated_btn' in self.request.POST:
+            self.object.participant.remove(self.request.user)
+        else:
+            self.object.organizer.remove(self.request.user)
+        return HttpResponseRedirect(self.get_success_url())
