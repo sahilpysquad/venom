@@ -1,10 +1,21 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView
+from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView, TemplateView
 
 from account_user.models import User
 from vc.forms import VCModelForm
 from vc.models import VC
+
+
+class HomePage(LoginRequiredMixin, TemplateView):
+    model = VC
+    template_name = 'home.html'
+    queryset = model.objects.filter(status='CR')
+
+    def get_context_data(self, **kwargs):
+        context = super(HomePage, self).get_context_data(**kwargs)
+        context['vc_objs'] = self.queryset
+        return context
 
 
 class VCListView(LoginRequiredMixin, ListView):
@@ -79,7 +90,7 @@ class VCDeleteView(LoginRequiredMixin, DeleteView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class LeaveVCView(LoginRequiredMixin, DeleteView):
+class VCLeaveView(LoginRequiredMixin, DeleteView):
     template_name = 'vc/vc_leave.html'
     model = VC
     slug_url_kwarg = 'vc_id'

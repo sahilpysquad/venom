@@ -1,6 +1,22 @@
 {% extends 'base.html' %}
-
+{% block title%}Home Page{% endblock %}
 {% block content %}
-<h2>Hello This is HOME PAGE</h2>
-<a href="{% url 'logout' %}">LogOut</a>
+<div class="container mt-3 text-center">
+<h3>Here is some VCs which can be starting soon..!!!</h3>
+</div>
+{% for vc_obj in vc_objs %}
+<div class="container mt-5 col-8">
+    <div class="container">
+        <div class="shadow p-3 mb-5 bg-body rounded">
+            <p>Name: {{ vc_obj.name }}</p>
+            <p>ID: {{ vc_obj.vc_id }}</p>
+            <p>Created By: {{ vc_obj.created_by.full_name }}</p>
+            <p>EMI Amount: {{ vc_obj.emi_amount }}</p>
+            <p>EMI Type: {{ vc_obj.emi_type_verbose }}</p>
+            <p>Interest: {{ vc_obj.interest }}</p>
+            <p>Participants: {{ vc_obj.participant_count }}</p>
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endblock%}

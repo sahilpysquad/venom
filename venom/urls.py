@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from account_user.apis.api import LoginAPIView
-from account_user.views import HomePage
+from vc.views import HomePage
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -3,14 +3,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render
 from django.views import View
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, TemplateView, UpdateView
 
 from account_user.forms import UserForm
 from account_user.models import User
-
-
-class HomePage(LoginRequiredMixin, TemplateView):
-    template_name = 'home.html'
 
 
 class UserRegistration(CreateView):
@@ -18,6 +14,15 @@ class UserRegistration(CreateView):
     form_class = UserForm
     template_name = 'account_user/user_registration_form.html'
     success_url = 'login/'
+
+
+class UserEditView(UpdateView):
+    model = User
+    fields = ('username', 'first_name', 'last_name')
+    template_name = 'account_user/user_update.html'
+    slug_url_kwarg = 'username'
+    slug_field = 'username'
+    success_url = '/'
 
 
 class VerifyUserEmail(View):

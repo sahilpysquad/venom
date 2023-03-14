@@ -96,6 +96,14 @@ class VC(models.Model):
     def status_verbose(self):
         return dict(self.STATUS).get(self.status)
 
+    @property
+    def participant_count(self):
+        return self.participant.count()
+
+    @property
+    def organizer_count(self):
+        return self.organizer.count()
+
 
 class AmountPaidByUser(models.Model):
     vc = models.ForeignKey(verbose_name='VC', to=VC, on_delete=models.DO_NOTHING, related_name='vc_amount_payers')
